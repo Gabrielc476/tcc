@@ -1,0 +1,47 @@
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 15px;
+  border: none;
+  height: 80%;
+  width: 30%;
+  align-items: center;
+  justify-content: center;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.form-input {
+  outline: none;
+  border: 0;
+  border-bottom: 2px solid gray;
+  margin-top: 20%;
+  font-size: 1.2rem;
+}
+
+.form-input:focus {
+  transition: 0.4s;
+  border-bottom: 2px solid blue;
+}
+
+.form-input:focus .senha {
+  width: 50%;
+  margin-top: 0;
+}
+
+.senha {
+  display: flex;
+  flex-direction: column;
+}
+
+.senha-req {
+  font-size: x-small;
+  width: 100%;
+}
