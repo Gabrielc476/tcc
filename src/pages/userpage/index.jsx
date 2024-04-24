@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import "./styles.css";
 import Input from "../../components/input";
 
 const UserPage = () => {
@@ -8,7 +9,7 @@ const UserPage = () => {
   const [inputsConfig, setInputsConfig] = useState([
     { nome: "anos", tipo: "experiencia", indice: 1 },
     { nome: "conhecimentos", tipo: "conhecimento", indice: 1 },
-    { nome: "linguagems", tipo: "linguagem", indice: 1 },
+    { nome: "idiomas", tipo: "idioma", indice: 1 },
     { nome: "graus", tipo: "grau", indice: 1 },
   ]);
 
@@ -126,10 +127,10 @@ const UserPage = () => {
               Adicionar Conhecimento
             </button>
           </div>
-          <div className="Linguagem">
-            <h3 className="linguagem-titulo">Linguagens</h3>
-            <div className="inputs">{renderInputs("linguagem")}</div>
-            <button type="button" onClick={() => handleAddInput("linguagem")}>
+          <div className="Idioma">
+            <h3 className="Idioma-titulo">Idioma</h3>
+            <div className="inputs">{renderInputs("idioma")}</div>
+            <button type="button" onClick={() => handleAddInput("idioma")}>
               Adicionar Linguagem
             </button>
           </div>

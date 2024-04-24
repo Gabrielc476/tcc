@@ -31,7 +31,7 @@ const Input = ({ nome, tipo, indice, register }) => {
         />
       </div>
     );
-  } else if (tipo === "linguagem") {
+  } else if (tipo === "idioma") {
     return (
       <div className="input">
         <input
@@ -43,9 +43,9 @@ const Input = ({ nome, tipo, indice, register }) => {
         <p>em: </p>
         <input
           type="text"
-          placeholder="lingua"
-          name={`lingua.${indice}`}
-          {...register(`lingua.${indice}`)}
+          placeholder="idioma"
+          name={`idioma.${indice}`}
+          {...register(`idioma.${indice}`)}
         />
       </div>
     );

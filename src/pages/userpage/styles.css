@@ -1,0 +1,124 @@
+body {
+  background-color: #222; /* Cor de fundo do corpo */
+  color: #fff; /* Cor do texto */
+}
+
+.container {
+  max-width: 600px; /* Reduz a largura máxima */
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  border: 1px solid #555; /* Bordas com cor mais escura */
+  border-radius: 5px; /* Arredonda as bordas */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra mais escura */
+}
+
+.titulo h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.vaga-titulo h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.Experiencia,
+.Conhecimento,
+.Idioma,
+.Grau {
+  margin-bottom: 20px;
+}
+
+.experiencia-titulo,
+.conhecimento-titulo,
+.Idioma-titulo,
+.grau-titulo {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.input {
+  margin-bottom: 20px; /* Adiciona margem em baixo */
+}
+
+.input p {
+  display: inline;
+  margin-right: 5px;
+}
+
+input[type="text"],
+input[type="file"] {
+  width: calc(
+    100% - 22px
+  ); /* Calcula a largura para compensar o padding e borda */
+  padding: 8px; /* Reduz o padding */
+  margin-top: 10px; /* Adiciona margem em cima */
+  margin-bottom: 10px; /* Adiciona margem em baixo */
+  border: 1px solid #555; /* Bordas com cor mais escura */
+  border-radius: 5px;
+  background-color: #333; /* Cor de fundo do input */
+  color: #fff; /* Cor do texto */
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff; /* Cor de fundo do botão */
+  color: #fff; /* Cor do texto do botão */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3; /* Cor de fundo do botão ao passar o mouse */
+}
+
+input[type="submit"] {
+  padding: 10px 20px;
+  background-color: #28a745; /* Cor de fundo do botão de envio */
+  color: #fff; /* Cor do texto do botão de envio */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+input[type="submit"]:hover {
+  background-color: #218838; /* Cor de fundo do botão de envio ao passar o mouse */
+}
+
+.curriculo-container {
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+
+  .titulo h1 {
+    font-size: 20px;
+  }
+
+  .vaga-titulo h2 {
+    font-size: 18px;
+  }
+
+  .experiencia-titulo,
+  .conhecimento-titulo,
+  .Idioma-titulo,
+  .grau-titulo {
+    font-size: 16px;
+  }
+
+  input[type="text"],
+  input[type="file"] {
+    padding: 8px;
+  }
+
+  button,
+  input[type="submit"] {
+    padding: 8px 16px;
+  }
+}
