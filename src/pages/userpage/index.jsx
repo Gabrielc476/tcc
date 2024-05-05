@@ -3,9 +3,11 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import "./styles.css";
 import Input from "../../components/input";
+import { useNavigate } from "react-router-dom";
 
 const UserPage = () => {
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
   const [inputsConfig, setInputsConfig] = useState([
     { nome: "anos", tipo: "experiencia", indice: 1 },
     { nome: "conhecimentos", tipo: "conhecimento", indice: 1 },
@@ -23,7 +25,7 @@ const UserPage = () => {
     }
     let experiencias = [];
     let conhecimentos = [];
-    let linguas = [];
+    let idiomas = [];
     let cursos = [];
     for (let i = 0; i < data.anos.length; i++) {
       if (data.anos[i] !== undefined) {
@@ -46,9 +48,9 @@ const UserPage = () => {
       if (data.proficiencia[i] !== undefined) {
         let tempprof = {
           proficiencia: data.proficiencia[i],
-          lingua: data.lingua[i],
+          idioma: data.idioma[i],
         };
-        linguas.push(tempprof);
+        idiomas.push(tempprof);
       }
     }
     for (let i = 0; i < data.curso.length; i++) {
@@ -61,7 +63,14 @@ const UserPage = () => {
       }
     }
 
-    const userData = [experiencias, conhecimentos, linguas, cursos];
+    const userData = [
+      data.nome,
+      data.resumo,
+      experiencias,
+      conhecimentos,
+      idiomas,
+      cursos,
+    ];
 
     axios.post("http://127.0.0.1:5000/enviarvaga", userData).then((res) => {
       console.log(res.data);
@@ -70,6 +79,7 @@ const UserPage = () => {
       .post("http://127.0.0.1:5000/enviarcurriculo", formData)
       .then((res) => {
         console.log(res.data);
+        navigate("/comparação");
       });
   };
 
@@ -104,12 +114,36 @@ const UserPage = () => {
     <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
       <div className="container">
         <div className="titulo">
-          <h1>Titulo</h1>
+          <h1>Descreva a vaga</h1>
         </div>
         <div className="vaga-titulo">
-          <h2>Descreva a vaga</h2>
+          <h2></h2>
         </div>
         <div className="vaga">
+          <div className="nome-vaga">
+            <h3 className="nome-titulo">
+              <div className="input-nome">
+                <input
+                  type="text"
+                  placeholder="nome da vaga"
+                  name="nome"
+                  {...register("nome")}
+                />
+              </div>
+            </h3>
+          </div>
+          <div className="resumo-vaga">
+            <h3 className="resumo-titulo">
+              <div className="input-resumo">
+                <input
+                  type="text"
+                  placeholder="escreva um pequeno resumo da vaga"
+                  name="resumo"
+                  {...register("resumo")}
+                />
+              </div>
+            </h3>
+          </div>
           <div className="Experiencia">
             <h3 className="experiencia-titulo">Experiencias</h3>
             <div className="inputs">{renderInputs("experiencia")}</div>
