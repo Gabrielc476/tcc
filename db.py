@@ -1,40 +1,69 @@
-import psycopg2
+import pymongo
+from bson import ObjectId
+# Replace the placeholders with your actual connection string and database name
+conn_str = "mongodb+srv://gabrielccavalcante:ubVH3SPiTw2zEsuv@tcc2.gq0qtz7.mongodb.net/?retryWrites=true&w=majority&appName=TCC2"
+db_name = "tcc"
 
-conn = psycopg2.connect(database = "TCC",
-                        user = "postgres",
-                        host= 'localhost',
-                        password = "791897",
-                        port = 5432)
-cur = conn.cursor()
-def insertUser(user):
-    cur.execute(
-        "INSERT INTO usuarios(userid, username, email, senha,idade) VALUES(%s,%s,%s, %s, %s)", (user["userid"], user["username"], user["email"], user["senha"], user["idade"]));
-    conn.commit()
+client = pymongo.MongoClient(conn_str)
+db = client[db_name]
 
-def checkAvaliable(user):
-    print(user)
-    cur.execute("select username,email from usuarios where username = %s or email = %s", (user["username"],user["email"]))
-    dado = cur.fetchone()
-    resultado = {
-        "nomedisponivel" : True,
-        "emaildisponivel" : True,
-        "mensagem" : ""
-    }
-    if dado:
-        if dado[0] == user["username"]:
-            resultado["nomedisponivel"] = False
-            resultado["mensagem"] = "nome de usuario já existente"
-            print(resultado)
-            return resultado
-        elif dado[1] == user["email"]:
-            resultado["emaildisponivel"] = False
-            resultado["mensagem"] = "email já existente"
-            print(resultado)
-            return resultado
-    return resultado
+# Access the desired database
 
-def getUser(username):
-    cur.execute("select * from usuarios where username = %s ",
-                (username,))
-    dado = cur.fetchone()
-    return dado
+
+def test_connection(conn_str):
+  """
+  Tests the connection to a MongoDB database.
+
+  Args:
+    conn_str (str): The MongoDB connection string.
+
+  Returns:
+    bool: True if the connection is successful, False otherwise.
+  """
+  try:
+
+    # The ping command is cheap and does not require auth.
+    client.admin.command('ping')
+    print("Connection to MongoDB successful!")
+    return True
+  except pymongo.errors.ConnectionFailure as error:
+    print(f"Could not connect to MongoDB: {error}")
+    return False
+
+def inserir_vaga_mongodb(vaga):
+    """
+    Insere uma vaga na collection "vagas" no MongoDB.
+
+    Args:
+        vaga (dict): Um dicionário contendo os dados da vaga.
+    """
+    try:
+
+      collection = db["vagas"]
+      collection.insert_one(vaga)
+      print("Vaga inserida com sucesso no MongoDB!")
+    except pymongo.errors.ConnectionFailure as error:
+      print(f"Could not connect to MongoDB: {error}")
+
+
+def inserir_user_mongodb(user):
+  try:
+
+    collection = db["usuarios"]
+
+    collection.insert_one(user)
+    print(f"Usuário '{user['username']}' registrado com sucesso!")
+  except pymongo.errors.ConnectionFailure as error:
+    print(f"Could not connect to MongoDB: {error}")
+
+def get_user_by_username(username):
+
+  try:
+    collection = db["usuarios"]
+    user = collection.find_one({"username": username})
+    user["_id"] = str(user["_id"])
+    return user
+  except pymongo.errors.ConnectionFailure as error:
+    print(f"Could not connect to MongoDB: {error}")
+    return None
+
