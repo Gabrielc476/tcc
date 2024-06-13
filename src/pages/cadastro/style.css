@@ -1,47 +1,61 @@
-.form-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100dvh;
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 20px;
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  border-radius: 15px;
-  border: none;
-  height: 80%;
-  width: 30%;
-  align-items: center;
-  justify-content: center;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+h1 {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 20px;
 }
 
-.form-input {
-  outline: none;
-  border: 0;
-  border-bottom: 2px solid gray;
-  margin-top: 20%;
-  font-size: 1.2rem;
+p {
+  text-align: center;
+  color: #888;
+  margin-bottom: 20px;
 }
 
-.form-input:focus {
-  transition: 0.4s;
-  border-bottom: 2px solid blue;
-}
-
-.form-input:focus .senha {
-  width: 50%;
-  margin-top: 0;
-}
-
-.senha {
+form {
   display: flex;
   flex-direction: column;
+  width: 400px;
+  margin: 0 auto; /* Centers the form horizontally */
 }
 
-.senha-req {
-  font-size: x-small;
+label {
+  margin-bottom: 5px;
+  display: block; /* Makes labels appear on their own line */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
   width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+input[type="email"],
+input[type="password"] {
+  width: 378px;
+  height: 33px;
+  background-color: #333333;
+  border: 1px solid #ccc;
+  color: white;
+}
+
+input[type="submit"] {
+  background-color: #4caf50; /* Green color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer; /* Changes cursor on hover */
+}
+
+input[type="submit"]:hover {
+  background-color: #45a049; /* Darker green on hover */
 }

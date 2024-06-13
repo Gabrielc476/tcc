@@ -5,6 +5,8 @@ import App from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UserPage from "./pages/userpage";
 import Comparacao from "./pages/comparacao";
+import Cadastro from "./pages/cadastro";
+import Login from "./pages/login";
 
 const router = createBrowserRouter([
   {
@@ -12,8 +14,16 @@ const router = createBrowserRouter([
     element: <UserPage />,
   },
   {
-    path: "/comparação",
+    path: "/comparacao",
     element: <Comparacao />,
+  },
+  {
+    path: "/cadastro",
+    element: <Cadastro />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);
 
