@@ -1,0 +1,23 @@
+.homepage-container {
+  display: flex;
+}
+
+.sidebar {
+  width: 250px; /* Ajuste conforme necessário */
+}
+
+.vagas {
+  flex: 1;
+  padding: 20px;
+  margin-left: 250px; /* Espaço para a sidebar */
+  background-color: #f5f5f5;
+}
+
+.vagas p {
+  font-size: 18px;
+  color: #333;
+}
+
+.vagas .job-card {
+  margin-bottom: 20px;
+}

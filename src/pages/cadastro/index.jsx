@@ -1,7 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 import "./style.css";
+import { useAuth } from "../../context/AuthContext";
 
 function getRandomIntInclusive(min, max) {
   const minCeiled = Math.ceil(min);
@@ -11,7 +14,8 @@ function getRandomIntInclusive(min, max) {
 
 const Cadastro = () => {
   const { register, handleSubmit } = useForm();
-
+  const navigate = useNavigate();
+  const { setUserId } = useAuth;
   const onSubmit = async (data) => {
     const userData = {
       username: data.username,
@@ -21,9 +25,18 @@ const Cadastro = () => {
       idempresa: getRandomIntInclusive(0, 90000),
     };
 
-    axios.post("http://127.0.0.1:5000/inserir-user", userData).then((res) => {
-      console.log(res.data);
-    });
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:5000/inserir-user",
+        userData
+      );
+      if (response.data.success) {
+        setUserId(response.data.userId); // Save user ID in context
+        navigate(`/homepage`);
+      }
+    } catch (error) {
+      console.error("Cadastro error:", error);
+    }
   };
 
   return (

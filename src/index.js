@@ -4,33 +4,41 @@ import "./index.css";
 import App from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UserPage from "./pages/userpage";
-import Comparacao from "./pages/comparacao";
+import Homepage from "./pages/homepage";
 import Cadastro from "./pages/cadastro";
 import Login from "./pages/login";
+import { AuthProvider } from "./context/AuthContext";
+import JobDetails from "./pages/jobdetails";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/userpage",
     element: <UserPage />,
   },
   {
-    path: "/comparacao",
-    element: <Comparacao />,
+    path: "/homepage",
+    element: <Homepage />,
   },
   {
     path: "/cadastro",
     element: <Cadastro />,
   },
   {
-    path: "/login",
+    path: "/",
     element: <Login />,
+  },
+  {
+    path: "vaga",
+    element: <JobDetails />,
   },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );
 

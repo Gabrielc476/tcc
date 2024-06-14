@@ -1,38 +1,46 @@
 import React from "react";
+import "./styles.css";
 
 const JobCard = ({
-  company,
-  title,
-  jobs,
-  aplicados,
-  elegiveis,
-  desqualificados,
-  reaproveitados,
+  titulo,
+  descrição,
+  experiencias,
+  conhecimentos,
+  idiomas,
+  formação,
+  onClick,
   ...props
 }) => {
   return (
-    <div className="job-card" {...props}>
+    <div className="job-card" {...props} onClick={onClick}>
       <div className="job-card-header">
-        <div className="job-card-company">{company}</div>
-        <div className="job-card-title">{title}</div>
-        <div className="job-card-jobs">{jobs} Jobs</div>
+        <div className="job-card-title">{titulo}</div>
       </div>
       <div className="job-card-details">
-        <div className="job-card-stage">
-          <div className="job-card-stage-label">Aplicados</div>
-          <div className="job-card-stage-value">{aplicados}</div>
+        <div className="job-card-detail-item">
+          <strong>Descrição:</strong> {descrição}
         </div>
-        <div className="job-card-stage">
-          <div className="job-card-stage-label">Elegíveis</div>
-          <div className="job-card-stage-value">{elegiveis}</div>
+        <div className="job-card-detail-item">
+          <strong>Experiências:</strong>{" "}
+          {experiencias
+            .map((exp) => `${exp.anos} anos em ${exp.requerimento}`)
+            .join(", ")}
         </div>
-        <div className="job-card-stage">
-          <div className="job-card-stage-label">Desqualificados</div>
-          <div className="job-card-stage-value">{desqualificados}</div>
+        <div className="job-card-detail-item">
+          <strong>Conhecimentos:</strong>{" "}
+          {conhecimentos.map((con) => con.descricao).join(", ")}
         </div>
-        <div className="job-card-stage">
-          <div className="job-card-stage-label">Reaproveitados</div>
-          <div className="job-card-stage-value">{reaproveitados}</div>
+        <div className="job-card-detail-item">
+          <strong>Idiomas:</strong>{" "}
+          {idiomas
+            .map((idioma) => `${idioma.idioma} (${idioma.proficiencia})`)
+            .join(", ")}
+        </div>
+        <div className="job-card-detail-item">
+          <strong>Formação:</strong>{" "}
+          {formação
+            .map((form) => `${form.curso} (${form.situacao})`)
+            .join(", ")}
         </div>
       </div>
     </div>

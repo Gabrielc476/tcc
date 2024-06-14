@@ -1,0 +1,64 @@
+.aplicante-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: calc(33.33% - 40px); /* Adjust width for 3 cards per row */
+  margin: 20px; /* Add margin between cards */
+  height: 300px; /* Set static height */
+  overflow: hidden; /* Ensure content doesn't overflow */
+}
+
+.aplicante-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.aplicante-card-image {
+  background-color: #6b6bfc;
+  color: white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-right: 15px;
+}
+
+.aplicante-card-info h1 {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.aplicante-card-info h2 {
+  font-size: 16px;
+  color: black;
+}
+
+.aplicante-card-details {
+  margin-bottom: 20px;
+  color: black;
+}
+
+.aplicante-detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.aplicante-card-skills {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.aplicante-skill {
+  background-color: #6b6bfc;
+  color: white;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 5px;
+  font-size: 14px;
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Updated import
+import { useAuth } from "../../context/AuthContext";
 
 function Login() {
   const {
@@ -11,14 +12,16 @@ function Login() {
   } = useForm();
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate(); // Utilize useNavigate
+  const { setUserId } = useAuth();
 
   const onSubmit = async (data) => {
     try {
       const response = await axios.post("http://127.0.0.1:5000/login", data);
       if (response.data.success) {
         // Login successful, redirect to Comparacao with username
-        navigate(`/comparacao`); // Use navigate
-        localStorage.setItem("username", data.username);
+        setUserId(response.data.userId);
+        console.log(response.data.userId);
+        navigate(`/homepage`); // Use navigate
       } else {
         setLoginError(response.data.message); // Set error message
       }
