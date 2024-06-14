@@ -1,5 +1,6 @@
 import pymongo
 from bson import ObjectId
+
 # Replace the placeholders with your actual connection string and database name
 conn_str = "mongodb+srv://gabrielccavalcante:ubVH3SPiTw2zEsuv@tcc2.gq0qtz7.mongodb.net/?retryWrites=true&w=majority&appName=TCC2"
 db_name = "tcc"
@@ -7,28 +8,23 @@ db_name = "tcc"
 client = pymongo.MongoClient(conn_str)
 db = client[db_name]
 
-# Access the desired database
-
-
 def test_connection(conn_str):
-  """
-  Tests the connection to a MongoDB database.
+    """
+    Tests the connection to a MongoDB database.
 
-  Args:
-    conn_str (str): The MongoDB connection string.
+    Args:
+        conn_str (str): The MongoDB connection string.
 
-  Returns:
-    bool: True if the connection is successful, False otherwise.
-  """
-  try:
-
-    # The ping command is cheap and does not require auth.
-    client.admin.command('ping')
-    print("Connection to MongoDB successful!")
-    return True
-  except pymongo.errors.ConnectionFailure as error:
-    print(f"Could not connect to MongoDB: {error}")
-    return False
+    Returns:
+        bool: True if the connection is successful, False otherwise.
+    """
+    try:
+        client.admin.command('ping')
+        print("Connection to MongoDB successful!")
+        return True
+    except pymongo.errors.ConnectionFailure as error:
+        print(f"Could not connect to MongoDB: {error}")
+        return False
 
 def inserir_vaga_mongodb(vaga):
     """
@@ -38,32 +34,85 @@ def inserir_vaga_mongodb(vaga):
         vaga (dict): Um dicionário contendo os dados da vaga.
     """
     try:
-
-      collection = db["vagas"]
-      collection.insert_one(vaga)
-      print("Vaga inserida com sucesso no MongoDB!")
+        collection = db["vagas"]
+        collection.insert_one(vaga)
+        print("Vaga inserida com sucesso no MongoDB!")
     except pymongo.errors.ConnectionFailure as error:
-      print(f"Could not connect to MongoDB: {error}")
-
+        print(f"Could not connect to MongoDB: {error}")
 
 def inserir_user_mongodb(user):
-  try:
+    """
+    Insere um usuário na collection "usuarios" no MongoDB.
 
-    collection = db["usuarios"]
-
-    collection.insert_one(user)
-    print(f"Usuário '{user['username']}' registrado com sucesso!")
-  except pymongo.errors.ConnectionFailure as error:
-    print(f"Could not connect to MongoDB: {error}")
+    Args:
+        user (dict): Um dicionário contendo os dados do usuário.
+    """
+    try:
+        collection = db["usuarios"]
+        collection.insert_one(user)
+        print(f"Usuário '{user['username']}' registrado com sucesso!")
+    except pymongo.errors.ConnectionFailure as error:
+        print(f"Could not connect to MongoDB: {error}")
 
 def get_user_by_username(username):
+    """
+    Busca um usuário no MongoDB pelo nome de usuário.
 
+    Args:
+        username (str): O nome de usuário.
+
+    Returns:
+        dict: O documento do usuário se encontrado, caso contrário None.
+    """
+    try:
+        collection = db["usuarios"]
+        user = collection.find_one({"username": username})
+        if user:
+            user["_id"] = str(user["_id"])
+        return user
+    except pymongo.errors.ConnectionFailure as error:
+        print(f"Could not connect to MongoDB: {error}")
+        return None
+
+
+def get_all_vagas():
+  """
+  Retorna todas as vagas existentes na coleção "vagas" do MongoDB.
+
+  Returns:
+      list: Uma lista de documentos contendo todas as vagas.
+  """
   try:
-    collection = db["usuarios"]
-    user = collection.find_one({"username": username})
-    user["_id"] = str(user["_id"])
-    return user
+    collection = db["vagas"]
+    vagas = list(collection.find())
+    for vaga in vagas:
+      vaga["_id"] = str(vaga["_id"])  # Converte ObjectId para string
+    return vagas
   except pymongo.errors.ConnectionFailure as error:
     print(f"Could not connect to MongoDB: {error}")
-    return None
+    return []
+  except Exception as error:
+    print(f"Error fetching vagas: {error}")
+    return []
+def get_user_by_id(userid):
+    """
+    Busca um usuário no MongoDB pelo ID.
 
+    Args:
+        userid (str): O ID do usuário.
+
+    Returns:
+        dict: O documento do usuário se encontrado, caso contrário None.
+    """
+    try:
+        collection = db["usuarios"]
+        user = collection.find_one({"_id": ObjectId(userid)})
+        if user:
+            user["_id"] = str(user["_id"])
+        return user
+    except pymongo.errors.ConnectionFailure as error:
+        print(f"Could not connect to MongoDB: {error}")
+        return None
+    except Exception as error:
+        print(f"Error fetching user by id: {error}")
+        return None
