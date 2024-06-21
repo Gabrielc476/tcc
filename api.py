@@ -23,12 +23,14 @@ def inserirUser():
 def enviarVaga():
     data = request.get_json()
     vaga = {
-        "titulo": data["titulo"],
-        "descricao": data["descricao"],
+        "userID" : data["userId"],
+        "titulo": data["nome"],
+        "descricao": data["resumo"],
         "experiencias": data["experiencias"],
         "conhecimentos": data["conhecimentos"],
         "idiomas": data["idiomas"],
-        "formacao": data["formacao"]
+        "formacao": data["cursos"]
+
     }
     db.inserir_vaga_mongodb(vaga)
     return jsonify(vaga), 201
@@ -80,6 +82,9 @@ def getUserById():
     if not user:
         return jsonify({"error": "User not found"}), 404
     return jsonify(user), 200
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -116,3 +116,40 @@ def get_user_by_id(userid):
     except Exception as error:
         print(f"Error fetching user by id: {error}")
         return None
+
+
+def inserir_curriculo_mongodb(curriculo):
+    """
+    Insere um currículo na collection "curriculos" no MongoDB.
+
+    Args:
+        curriculo (dict): Um dicionário contendo os dados do currículo.
+    """
+    try:
+        collection = db["curriculos"]
+        collection.insert_one(curriculo)
+        print("Currículo inserido com sucesso no MongoDB!")
+    except pymongo.errors.ConnectionFailure as error:
+        print(f"Could not connect to MongoDB: {error}")
+    except Exception as error:
+        print(f"Error inserting curriculo: {error}")
+
+def get_all_curriculos():
+    """
+    Retorna todos os currículos existentes na coleção "curriculos" do MongoDB.
+
+    Returns:
+        list: Uma lista de documentos contendo todos os currículos.
+    """
+    try:
+        collection = db["curriculos"]
+        curriculos = list(collection.find())
+        for curriculo in curriculos:
+            curriculo["_id"] = str(curriculo["_id"])  # Converte ObjectId para string
+        return curriculos
+    except pymongo.errors.ConnectionFailure as error:
+        print(f"Could not connect to MongoDB: {error}")
+        return []
+    except Exception as error:
+        print(f"Error fetching curriculos: {error}")
+        return []
