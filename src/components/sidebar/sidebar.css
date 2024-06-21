@@ -1,0 +1,34 @@
+.sidebar-container {
+  background-color: #1c1c1c; /* Cor de fundo escura */
+  height: 100vh; /* Altura da tela inteira */
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: fixed; /* Fixa na tela ao rolar */
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.sidebar-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.sidebar-link {
+  color: #ffffff; /* Cor dos ícones */
+  text-decoration: none;
+}
+
+.sidebar-icon {
+  font-size: 24px; /* Tamanho dos ícones */
+  transition: color 0.3s;
+}
+
+.sidebar-link:hover .sidebar-icon {
+  color: #007bff; /* Cor ao passar o mouse */
+}

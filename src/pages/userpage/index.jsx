@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import "./styles.css";
+import { useAuth } from "../../context/AuthContext";
 import Input from "../../components/input";
 import { useNavigate } from "react-router-dom";
+import "./userpage.css"; // Certifique-se de que esse arquivo CSS existe
 
 const UserPage = () => {
   const { register, handleSubmit } = useForm();
@@ -14,6 +15,7 @@ const UserPage = () => {
     { nome: "idiomas", tipo: "idioma", indice: 1 },
     { nome: "graus", tipo: "grau", indice: 1 },
   ]);
+  const { userId } = useAuth();
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -63,14 +65,15 @@ const UserPage = () => {
       }
     }
 
-    const userData = [
-      data.nome,
-      data.resumo,
-      experiencias,
-      conhecimentos,
-      idiomas,
-      cursos,
-    ];
+    const userData = {
+      userId: userId,
+      nome: data.nome,
+      resumo: data.resumo,
+      experiencias: experiencias,
+      conhecimentos: conhecimentos,
+      idiomas: idiomas,
+      cursos: cursos,
+    };
 
     axios.post("http://127.0.0.1:5000/enviarvaga", userData).then((res) => {
       console.log(res.data);
@@ -79,7 +82,7 @@ const UserPage = () => {
       .post("http://127.0.0.1:5000/enviarcurriculo", formData)
       .then((res) => {
         console.log(res.data);
-        navigate("/comparação");
+        navigate("/homepage");
       });
   };
 
@@ -111,18 +114,19 @@ const UserPage = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-      <div className="container">
-        <div className="titulo">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      encType="multipart/form-data"
+      className="cadastrovaga-form"
+    >
+      <div className="cadastrovaga-container">
+        <div className="cadastrovaga-titulo">
           <h1>Descreva a vaga</h1>
         </div>
-        <div className="vaga-titulo">
-          <h2></h2>
-        </div>
-        <div className="vaga">
-          <div className="nome-vaga">
-            <h3 className="nome-titulo">
-              <div className="input-nome">
+        <div className="cadastrovaga-vaga">
+          <div className="cadastrovaga-nome-vaga">
+            <h3 className="cadastrovaga-nome-titulo">
+              <div className="cadastrovaga-input-nome">
                 <input
                   type="text"
                   placeholder="nome da vaga"
@@ -132,9 +136,9 @@ const UserPage = () => {
               </div>
             </h3>
           </div>
-          <div className="resumo-vaga">
-            <h3 className="resumo-titulo">
-              <div className="input-resumo">
+          <div className="cadastrovaga-resumo-vaga">
+            <h3 className="cadastrovaga-resumo-titulo">
+              <div className="cadastrovaga-input-resumo">
                 <input
                   type="text"
                   placeholder="escreva um pequeno resumo da vaga"
@@ -144,39 +148,56 @@ const UserPage = () => {
               </div>
             </h3>
           </div>
-          <div className="Experiencia">
-            <h3 className="experiencia-titulo">Experiencias</h3>
-            <div className="inputs">{renderInputs("experiencia")}</div>
-            <button type="button" onClick={() => handleAddInput("experiencia")}>
+          <div className="cadastrovaga-experiencia">
+            <h3 className="cadastrovaga-experiencia-titulo">Experiencias</h3>
+            <div className="cadastrovaga-inputs">
+              {renderInputs("experiencia")}
+            </div>
+            <button
+              type="button"
+              className="cadastrovaga-add-button"
+              onClick={() => handleAddInput("experiencia")}
+            >
               Adicionar Experiência
             </button>
           </div>
-          <div className="Conhecimento">
-            <h3 className="conhecimento-titulo">Conhecimentos</h3>
-            <div className="inputs">{renderInputs("conhecimento")}</div>
+          <div className="cadastrovaga-conhecimento">
+            <h3 className="cadastrovaga-conhecimento-titulo">Conhecimentos</h3>
+            <div className="cadastrovaga-inputs">
+              {renderInputs("conhecimento")}
+            </div>
             <button
               type="button"
+              className="cadastrovaga-add-button"
               onClick={() => handleAddInput("conhecimento")}
             >
               Adicionar Conhecimento
             </button>
           </div>
-          <div className="Idioma">
-            <h3 className="Idioma-titulo">Idioma</h3>
-            <div className="inputs">{renderInputs("idioma")}</div>
-            <button type="button" onClick={() => handleAddInput("idioma")}>
+          <div className="cadastrovaga-idioma">
+            <h3 className="cadastrovaga-idioma-titulo">Idioma</h3>
+            <div className="cadastrovaga-inputs">{renderInputs("idioma")}</div>
+            <button
+              type="button"
+              className="cadastrovaga-add-button"
+              onClick={() => handleAddInput("idioma")}
+            >
               Adicionar Linguagem
             </button>
           </div>
-          <div className="Grau">
-            <h3 className="grau-titulo">Grau de Escolaridade</h3>
-            <div className="inputs">{renderInputs("grau")}</div>
-            <button type="button" onClick={() => handleAddInput("grau")}>
+          <div className="cadastrovaga-grau">
+            <h3 className="cadastrovaga-grau-titulo">Grau de Escolaridade</h3>
+            <div className="cadastrovaga-inputs">{renderInputs("grau")}</div>
+            <button
+              type="button"
+              className="cadastrovaga-add-button"
+              onClick={() => handleAddInput("grau")}
+            >
               Adicionar Grau de Escolaridade
             </button>
           </div>
         </div>
-        <div className="curriculo-container">
+        <div className="cadastrovaga-curriculo-container">
           <input
             type="file"
             name="curriculo"
@@ -184,7 +205,7 @@ const UserPage = () => {
             {...register("curriculo")}
           />
         </div>
-        <input type="submit" />
+        <input type="submit" className="cadastrovaga-submit" />
       </div>
     </form>
   );

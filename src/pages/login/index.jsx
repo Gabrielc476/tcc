@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Updated import
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import "./loginpage.css";
 
 function Login() {
   const {
@@ -11,19 +12,17 @@ function Login() {
     formState: { errors },
   } = useForm();
   const [loginError, setLoginError] = useState(null);
-  const navigate = useNavigate(); // Utilize useNavigate
+  const navigate = useNavigate();
   const { setUserId } = useAuth();
 
   const onSubmit = async (data) => {
     try {
       const response = await axios.post("http://127.0.0.1:5000/login", data);
       if (response.data.success) {
-        // Login successful, redirect to Comparacao with username
         setUserId(response.data.userId);
-        console.log(response.data.userId);
-        navigate(`/homepage`); // Use navigate
+        navigate(`/homepage`);
       } else {
-        setLoginError(response.data.message); // Set error message
+        setLoginError(response.data.message);
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -34,30 +33,45 @@ function Login() {
   return (
     <div className="login-container">
       <h1 className="login-heading">Login</h1>
-      <div className="login-form">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <label htmlFor="username">Username</label>
+      <div>
+        <form onSubmit={handleSubmit(onSubmit)} className="login-form">
+          <label htmlFor="username" className="login-label">
+            Username
+          </label>
           <input
             type="text"
             id="username"
             name="username"
             {...register("username", { required: "Username is required" })}
+            className="login-input"
           />
           {errors.username && (
             <p className="error">{errors.username.message}</p>
           )}
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password" className="login-label">
+            Password
+          </label>
           <input
             type="password"
             id="password"
             name="password"
             {...register("password", { required: "Password is required" })}
+            className="login-input"
           />
           {errors.password && (
             <p className="error">{errors.password.message}</p>
           )}
           {loginError && <p className="error">{loginError}</p>}
-          <button type="submit">Login</button>
+          <button type="submit" className="login-button">
+            Login
+          </button>
+          <button
+            type="button"
+            className="login-cadastrobutton"
+            onClick={() => navigate("/cadastro")}
+          >
+            Cadastrar
+          </button>
         </form>
       </div>
     </div>

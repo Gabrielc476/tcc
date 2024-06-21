@@ -2,8 +2,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-import "./style.css";
+import "./cadastropage.css";
 import { useAuth } from "../../context/AuthContext";
 
 function getRandomIntInclusive(min, max) {
@@ -40,52 +39,72 @@ const Cadastro = () => {
   };
 
   return (
-    <div>
-      <h1>Criar Conta</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="username">Nome de Usuário:</label>
+    <div className="cadastro-container">
+      <h1 className="cadastro-titulo">Criar Conta</h1>
+      <form onSubmit={handleSubmit(onSubmit)} className="cadastro-form">
+        <label htmlFor="username" className="cadastro-label">
+          Nome de Usuário:
+        </label>
         <input
           type="text"
           id="username"
           name="username"
           {...register("username")}
+          className="cadastro-input"
         />
 
         <br />
 
-        <label htmlFor="email">Email:</label>
-        <input type="email" id="email" name="email" {...register("email")} />
+        <label htmlFor="email" className="cadastro-label">
+          Email:
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          {...register("email")}
+          className="cadastro-input"
+        />
 
         <br />
 
-        <label htmlFor="password">Senha:</label>
+        <label htmlFor="password" className="cadastro-label">
+          Senha:
+        </label>
         <input
           type="password"
           id="password"
           name="password"
           {...register("password")}
+          className="cadastro-input"
         />
 
         <br />
 
-        <label htmlFor="confirm_password">Confirmar Senha:</label>
+        <label htmlFor="confirm_password" className="cadastro-label">
+          Confirmar Senha:
+        </label>
         <input
           type="password"
           id="confirm_password"
           name="confirm_password"
           {...register("confirm_password")}
+          className="cadastro-input"
         />
         <br />
-        <label htmlFor="Empresa">Nome da Empresa:</label>
+        <label htmlFor="Empresa" className="cadastro-label">
+          Nome da Empresa:
+        </label>
         <input
           type="text"
           id="empresa"
           name="empresa"
           {...register("empresa")}
+          className="cadastro-input"
         />
         <br />
 
-        <input type="submit" value="Criar Conta" />
+        <input type="submit" value="Criar Conta" className="cadastro-button" />
       </form>
     </div>
   );

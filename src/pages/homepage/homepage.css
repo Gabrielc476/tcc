@@ -1,0 +1,37 @@
+.homepage-container {
+  display: flex;
+  height: 100vh;
+}
+
+.homepage-sidebar {
+  width: 60px;
+}
+
+.homepage-content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.homepage-add-vaga-button {
+  align-self: flex-end;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.homepage-add-vaga-button:hover {
+  background-color: #0056b3;
+}
+
+.homepage-vagas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}

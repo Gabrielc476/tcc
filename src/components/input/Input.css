@@ -1,0 +1,24 @@
+.cadastrovaga-input {
+  margin-bottom: 10px;
+}
+
+.cadastrovaga-input p {
+  margin: 0 10px 0 0;
+  display: inline;
+}
+
+.cadastrovaga-input-anos,
+.cadastrovaga-input-requerimento,
+.cadastrovaga-input-descricao,
+.cadastrovaga-input-proficiencia,
+.cadastrovaga-input-idioma,
+.cadastrovaga-input-curso,
+.cadastrovaga-input-situacao {
+  padding: 10px;
+  margin-top: 5px;
+  width: calc(50% - 10px);
+}
+
+.cadastrovaga-input input {
+  margin-right: 10px;
+}

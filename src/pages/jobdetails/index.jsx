@@ -1,10 +1,9 @@
 import React from "react";
 import Sidebar from "../../components/sidebar";
 import AplicanteCard from "../../components/aplicantecard";
-import "./styles.css"; // Certifique-se de que esse arquivo CSS existe
+import "./jobdetails.css"; // Certifique-se de que esse arquivo CSS existe
 
 const JobDetails = () => {
-  // Aqui você pode definir os aplicantes diretamente
   const aplicantes = {
     elegiveis: [
       {
@@ -51,29 +50,35 @@ const JobDetails = () => {
   };
 
   return (
-    <div className="job-details-container">
-      <div className="sidebar">
+    <div className="jobdetail-container">
+      <div className="jobdetail-sidebar">
         <Sidebar />
       </div>
-      <div className="job-details">
-        <div className="aplicantes-container">
-          <div className="aplicantes-category">
+      <div className="jobdetail-content">
+        <div className="jobdetail-categories">
+          <div className="jobdetail-category">
             <h2>Elegíveis</h2>
-            {aplicantes.elegiveis.map((aplicante) => (
-              <AplicanteCard key={aplicante.id} {...aplicante} />
-            ))}
+            <div className="jobdetail-cards">
+              {aplicantes.elegiveis.map((aplicante) => (
+                <AplicanteCard key={aplicante.id} {...aplicante} />
+              ))}
+            </div>
           </div>
-          <div className="aplicantes-category">
+          <div className="jobdetail-category">
             <h2>Desqualificados</h2>
-            {aplicantes.desqualificados.map((aplicante) => (
-              <AplicanteCard key={aplicante.id} {...aplicante} />
-            ))}
+            <div className="jobdetail-cards">
+              {aplicantes.desqualificados.map((aplicante) => (
+                <AplicanteCard key={aplicante.id} {...aplicante} />
+              ))}
+            </div>
           </div>
-          <div className="aplicantes-category">
+          <div className="jobdetail-category">
             <h2>Reaproveitados</h2>
-            {aplicantes.reaproveitados.map((aplicante) => (
-              <AplicanteCard key={aplicante.id} {...aplicante} />
-            ))}
+            <div className="jobdetail-cards">
+              {aplicantes.reaproveitados.map((aplicante) => (
+                <AplicanteCard key={aplicante.id} {...aplicante} />
+              ))}
+            </div>
           </div>
         </div>
       </div>

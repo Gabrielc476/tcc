@@ -1,0 +1,31 @@
+.jobdetail-container {
+  display: flex;
+}
+
+.jobdetail-sidebar {
+  width: 20%;
+}
+
+.jobdetail-content {
+  width: 80%;
+  padding: 20px;
+}
+
+.jobdetail-categories {
+  display: flex;
+  flex-direction: column;
+}
+
+.jobdetail-category {
+  margin-bottom: 40px;
+}
+
+.jobdetail-category h2 {
+  margin-bottom: 20px;
+}
+
+.jobdetail-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}

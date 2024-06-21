@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles.css";
+import "./aplicantecard.css"; // Certifique-se de importar o arquivo CSS
 
 function AplicanteCard({ name, title, email, location, phone, skills }) {
   return (

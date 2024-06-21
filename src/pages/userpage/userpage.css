@@ -1,0 +1,68 @@
+.cadastrovaga-form {
+  width: 80%;
+  margin: auto;
+}
+
+.cadastrovaga-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cadastrovaga-titulo {
+  margin-bottom: 20px;
+}
+
+.cadastrovaga-vaga {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.cadastrovaga-nome-vaga,
+.cadastrovaga-resumo-vaga,
+.cadastrovaga-experiencia,
+.cadastrovaga-conhecimento,
+.cadastrovaga-idioma,
+.cadastrovaga-grau {
+  margin-bottom: 20px;
+}
+
+.cadastrovaga-input-nome input,
+.cadastrovaga-input-resumo input,
+.cadastrovaga-inputs input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.cadastrovaga-add-button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cadastrovaga-add-button:hover {
+  background-color: #0056b3;
+}
+
+.cadastrovaga-curriculo-container input {
+  margin-top: 20px;
+}
+
+.cadastrovaga-submit {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cadastrovaga-submit:hover {
+  background-color: #218838;
+}

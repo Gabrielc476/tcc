@@ -1,24 +1,25 @@
 import React from "react";
-import "./styles.css";
+import "./jobcard.css";
 
-const JobCard = ({
-  titulo,
-  descrição,
-  experiencias,
-  conhecimentos,
-  idiomas,
-  formação,
-  onClick,
-  ...props
-}) => {
+const JobCard = ({ props }) => {
+  const {
+    _id,
+    titulo,
+    descricao,
+    experiencias,
+    conhecimentos,
+    idiomas,
+    formacao,
+  } = props;
+
   return (
-    <div className="job-card" {...props} onClick={onClick}>
+    <div className="job-card">
       <div className="job-card-header">
         <div className="job-card-title">{titulo}</div>
       </div>
       <div className="job-card-details">
         <div className="job-card-detail-item">
-          <strong>Descrição:</strong> {descrição}
+          <strong>Descrição:</strong> {descricao}
         </div>
         <div className="job-card-detail-item">
           <strong>Experiências:</strong>{" "}
@@ -38,7 +39,7 @@ const JobCard = ({
         </div>
         <div className="job-card-detail-item">
           <strong>Formação:</strong>{" "}
-          {formação
+          {formacao
             .map((form) => `${form.curso} (${form.situacao})`)
             .join(", ")}
         </div>

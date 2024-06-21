@@ -3,10 +3,10 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  width: calc(33.33% - 40px); /* Adjust width for 3 cards per row */
-  margin: 20px; /* Add margin between cards */
-  height: 300px; /* Set static height */
-  overflow: hidden; /* Ensure content doesn't overflow */
+  width: calc(33.33% - 40px); /* Ajuste a largura para 3 cards por linha */
+  margin: 20px; /* Adicione margem entre os cards */
+  height: 300px; /* Defina uma altura estática */
+  overflow: hidden; /* Garanta que o conteúdo não transborde */
 }
 
 .aplicante-card-header {
@@ -35,12 +35,11 @@
 
 .aplicante-card-info h2 {
   font-size: 16px;
-  color: black;
+  color: gray;
 }
 
 .aplicante-card-details {
   margin-bottom: 20px;
-  color: black;
 }
 
 .aplicante-detail-item {
