@@ -94,6 +94,21 @@ def get_all_vagas():
   except Exception as error:
     print(f"Error fetching vagas: {error}")
     return []
+
+def get_vaga_by_userID(id):
+    try:
+        collection = db["vagas"]
+        vagas = list(collection.find({"userID": id}))
+        for vaga in vagas:
+            vaga["_id"] = str(vaga["_id"])
+        return vagas
+    except pymongo.errors.ConnectionFailure as error:
+        print(f"Could not connect to MongoDB: {error}")
+        return []
+    except Exception as error:
+        print(f"Error fetching vagas: {error}")
+        return []
+
 def get_user_by_id(userid):
     """
     Busca um usuário no MongoDB pelo ID.
@@ -133,6 +148,7 @@ def inserir_curriculo_mongodb(curriculo):
         print(f"Could not connect to MongoDB: {error}")
     except Exception as error:
         print(f"Error inserting curriculo: {error}")
+
 
 def get_all_curriculos():
     """

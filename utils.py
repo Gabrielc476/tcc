@@ -1,58 +1,43 @@
 from pypdf import PdfReader
 
-import csv
 
-# Dados dos perfis
-def criarCSV(vagas):
-
-    # Nome do arquivo
-    nome_arquivo = "perfis.csv"
-
-
-    # Abrir o arquivo CSV e escrever os dados
-    with open(nome_arquivo, mode='w', newline='', encoding='utf-8') as arquivo:
-        writer = csv.writer(arquivo)
-
-        for vaga in vagas:
-            if vaga:
-              experiencias = vaga[2]
-              conhecimentos = vaga[3]
-              idiomas = vaga[4]
-              formacoes = vaga[5]
-              textovaga = ""
-              for experiencia in experiencias:
-                  textovaga += f"{experiencia['anos']} anos de experiencia em {experiencia['requerimento']}, "
-              for conhecimento in conhecimentos:
-                  textovaga += f"conhecimento em {conhecimento['descricao']}, "
-              for idioma in idiomas:
-                  textovaga += f"{idioma['proficiencia']} em {idioma['idioma']}, "
-              for formacao in formacoes:
-                  if formacao['situacao'] == "formado":
-
-                    textovaga += f"formado em {formacao['curso']}, "
-                  elif formacao['situacao'] == "cursando":
-                      textovaga += f"cursando {formacao['curso']}, "
-              writer.writerow([textovaga])
-
-    print(f"Arquivo CSV '{nome_arquivo}' criado com sucesso!")
 def setTexts(files):
-    texts = []
+    """
+    Função para extrair o texto de uma lista de arquivos PDF.
 
-    text = ""
+    Parâmetros:
+        files (list): Lista de arquivos enviados via request.
+
+    Retorno:
+        List[dict]: Lista de dicionários contendo o nome do arquivo e o texto extraído.
+    """
+    texts = []  # Lista para armazenar os textos extraídos de cada arquivo
 
     for file in files:
-        pdf = PdfReader(file)
+        try:
+            # Abre o arquivo PDF
+            pdf = PdfReader(file)
+            text = ""  # Armazena o texto extraído do arquivo atual
 
-        for page in pdf.pages:
-            text += page.extract_text()
+            # Extrai o texto de cada página do PDF
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text
 
+            # Armazena o texto extraído e o nome do arquivo
+            texts.append({
+                "filename": file.filename,
+                "conteudo": text.strip() if text else "Texto não disponível"
+            })
 
-        texts.append(text)
+        except Exception as e:
+            # Se ocorrer algum erro ao processar o PDF, armazenamos o erro
+            texts.append({
+                "filename": file.filename,
+                "erro": f"Erro ao processar o arquivo: {str(e)}"
+            })
 
     return texts
 
-vagas = [['', '', [{'anos': '2', 'requerimento': 'front end'}, {'anos': '3', 'requerimento': 'back end'}], [{'descricao': 'typescript'}, {'descricao': 'react'}], [{'proficiencia': 'fluente', 'idioma': 'ingles'}, {'proficiencia': 'fluente', 'idioma': 'portugues '}], [{'curso': 'arquitetura', 'situacao': 'cursando'}]],
-['', '', [{'anos': '3', 'requerimento': 'front end'}, {'anos': '4', 'requerimento': 'back end'}], [{'descricao': 'typescript'}, {'descricao': 'java'}], [{'proficiencia': 'fluente', 'idioma': 'ingles'}, {'proficiencia': 'fluente', 'idioma': 'portugues '}], [{'curso': 'arquitetura', 'situacao': 'cursando'}]]
-         ]
 
-criarCSV(vagas)

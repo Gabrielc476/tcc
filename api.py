@@ -2,6 +2,7 @@ import db
 import utils
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import extrairdadoscurriculo
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -22,6 +23,7 @@ def inserirUser():
 @app.route("/enviarvaga", methods=["POST"])
 def enviarVaga():
     data = request.get_json()
+    # chatgpt adicione id_vaga como um dos atributos de vaga
     vaga = {
         "userID" : data["userId"],
         "titulo": data["nome"],
@@ -37,26 +39,67 @@ def enviarVaga():
 
 @app.route("/enviarcurriculo", methods=["POST"])
 def enviarCurriculo():
-    filelist = request.files
-    files = [filelist.get(key) for key in filelist]
-    textos = utils.setTexts(files)
-    curriculos = [{"conteudo": texto} for texto in textos]
-    for curriculo in curriculos:
-        db.inserir_curriculo_mongodb(curriculo)
-    return 'Arquivos recebidos com sucesso', 201
+    try:
+        # Obter o job_id do formulário enviado
+        job_id = request.args.get("id_vaga")
+        if not job_id:
+            return jsonify({"error": "jobId is required"}), 400
 
+        # Extrair os arquivos enviados
+        filelist = request.files
+        files = [filelist.get(key) for key in filelist]
+        print(job_id)
+        print(files)
+        # Extrair o texto dos arquivos PDF
+        textos_curriculos = utils.setTexts(files)
+
+        # Salvar cada currículo no MongoDB com o id_vaga e o texto extraído
+        for curriculo in textos_curriculos:
+            print(job_id)
+            curriculo_data = {
+                "id_vaga": job_id,
+                "texto": curriculo.get("conteudo", "Texto não disponível")
+            }
+            print(curriculo_data)
+            db.inserir_curriculo_mongodb(curriculo_data)
+
+        return jsonify({"message": "Currículos recebidos e salvos com sucesso"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 @app.route("/getvaga", methods=["GET"])
 def getVaga():
-
-    vagas = db.get_all_vagas()
+    params = request.args.get("id")
+    vagas = db.get_vaga_by_userID(params)
     print(vagas)
     return jsonify(vagas), 200
 
+
 @app.route("/getcurriculos", methods=["GET"])
 def getCurriculos():
+    # Pega todos os currículos do banco de dados
     curriculos = db.get_all_curriculos()
-    return jsonify(curriculos), 200
+    lista_curriculos_formatados = []
 
+    # Itera por cada currículo armazenado no banco
+    for curriculo in curriculos:
+        # Processa o currículo para extrair as informações desejadas
+        dados_extraidos = extrairdadoscurriculo.processar_curriculo(curriculo["texto"])
+
+        # Cria um objeto para cada currículo extraído, com as informações formatadas
+        curriculo_formatado = {
+            "id_vaga": curriculo.get("id_vaga", "Não especificado"),  # ID da vaga relacionada ao currículo
+            "nome": dados_extraidos.get("nome", "Nome não encontrado"),  # Nome do candidato
+            "email": dados_extraidos.get("email", "Email não encontrado"),  # E-mail do candidato
+            "telefone": dados_extraidos.get("telefone", "Telefone não encontrado"),  # Telefone do candidato
+            "habilidades": dados_extraidos.get("habilidades", [])  # Lista de habilidades extraídas
+        }
+
+        # Adiciona o currículo formatado à lista que será enviada ao frontend
+        lista_curriculos_formatados.append(curriculo_formatado)
+
+    # Retorna a lista de currículos formatados como um objeto JSON para o frontend
+    return jsonify(lista_curriculos_formatados), 200
 @app.route("/login", methods=["POST"])
 def login():
     try:
