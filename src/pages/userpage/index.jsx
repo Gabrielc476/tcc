@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import Input from "../../components/input";
 import { useNavigate } from "react-router-dom";
 import "./userpage.css"; // Certifique-se de que esse arquivo CSS existe
-
+//chatgpt crie um id para a vaga e envie nos objetos das chamadas de api
 const UserPage = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
@@ -20,11 +20,6 @@ const UserPage = () => {
   const onSubmit = async (data) => {
     const formData = new FormData();
 
-    if (data.curriculo.length > 0) {
-      Array.from(data.curriculo).map((curriculo, index) => {
-        formData.append(`curriculo${index}`, curriculo, curriculo.name);
-      });
-    }
     let experiencias = [];
     let conhecimentos = [];
     let idiomas = [];
@@ -78,12 +73,6 @@ const UserPage = () => {
     axios.post("http://127.0.0.1:5000/enviarvaga", userData).then((res) => {
       console.log(res.data);
     });
-    axios
-      .post("http://127.0.0.1:5000/enviarcurriculo", formData)
-      .then((res) => {
-        console.log(res.data);
-        navigate("/homepage");
-      });
   };
 
   const handleAddInput = (tipo) => {
@@ -197,14 +186,7 @@ const UserPage = () => {
             </button>
           </div>
         </div>
-        <div className="cadastrovaga-curriculo-container">
-          <input
-            type="file"
-            name="curriculo"
-            multiple
-            {...register("curriculo")}
-          />
-        </div>
+
         <input type="submit" className="cadastrovaga-submit" />
       </div>
     </form>

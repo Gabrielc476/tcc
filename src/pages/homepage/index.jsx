@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId } from "react";
 import axios from "axios";
 import Sidebar from "../../components/sidebar";
 import JobCard from "../../components/jobcard";
@@ -12,7 +12,7 @@ const Homepage = () => {
   const [error, setError] = useState(null);
   const { userId } = useAuth(); // Use userId from AuthContext
   const navigate = useNavigate();
-
+  console.log(userId);
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -22,7 +22,9 @@ const Homepage = () => {
         );
         const userData = userResponse.data;
 
-        const vagaResponse = await axios.get("http://127.0.0.1:5000/getvaga");
+        const vagaResponse = await axios.get(
+          `http://127.0.0.1:5000/getvaga?id=${userId}`
+        );
         const vagadata = Array.isArray(vagaResponse.data)
           ? vagaResponse.data
           : [vagaResponse.data];

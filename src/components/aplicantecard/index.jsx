@@ -1,48 +1,21 @@
 import React from "react";
-import "./aplicantecard.css"; // Certifique-se de importar o arquivo CSS
+import "./aplicantecard.css";
 
-function AplicanteCard({ name, title, email, location, phone, skills }) {
+const AplicanteCard = ({ name, email, phone, skills, onClick }) => {
   return (
-    <div className="aplicante-card">
-      <div className="aplicante-card-header">
-        <div className="aplicante-card-image">
-          {name
-            .split(" ")
-            .map((n) => n[0])
-            .join("")}
-        </div>
-        <div className="aplicante-card-info">
-          <h1>{name}</h1>
-          <h2>{title}</h2>
-        </div>
-      </div>
-      <div className="aplicante-card-details">
-        <div className="aplicante-detail-item">
-          <strong>Email:</strong>
-          <span>{email}</span>
-        </div>
-        <div className="aplicante-detail-item">
-          <strong>Location:</strong>
-          <span>{location}</span>
-        </div>
-        <div className="aplicante-detail-item">
-          <strong>Phone:</strong>
-          <span>{phone}</span>
-        </div>
-        <div className="aplicante-detail-item">
-          <strong>Title:</strong>
-          <span>{title}</span>
-        </div>
-      </div>
-      <div className="aplicante-card-skills">
-        {skills.map((skill) => (
-          <span key={skill} className="aplicante-skill">
-            {skill}
-          </span>
-        ))}
-      </div>
+    <div className="aplicante-card" onClick={onClick}>
+      <h3>{name}</h3>
+      <p>
+        <strong>Email:</strong> {email}
+      </p>
+      <p>
+        <strong>Telefone:</strong> {phone}
+      </p>
+      <p>
+        <strong>Habilidades:</strong> {skills.join(", ")}
+      </p>
     </div>
   );
-}
+};
 
 export default AplicanteCard;

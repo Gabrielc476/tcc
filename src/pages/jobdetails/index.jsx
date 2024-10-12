@@ -1,52 +1,72 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar";
 import AplicanteCard from "../../components/aplicantecard";
+import Modal from "../../components/modal";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 import "./jobdetails.css"; // Certifique-se de que esse arquivo CSS existe
 
 const JobDetails = () => {
-  const aplicantes = {
-    elegiveis: [
-      {
-        id: "1",
-        name: "João Silva",
-        title: "Front End Developer",
-        email: "joao@gmail.com",
-        location: "São Paulo",
-        phone: "123456789",
-        skills: ["React", "JavaScript"],
-      },
-      {
-        id: "2",
-        name: "Maria Souza",
-        title: "Front End Developer",
-        email: "maria@gmail.com",
-        location: "Rio de Janeiro",
-        phone: "987654321",
-        skills: ["TypeScript", "CSS"],
-      },
-    ],
-    desqualificados: [
-      {
-        id: "3",
-        name: "Carlos Pereira",
-        title: "Back End Developer",
-        email: "carlos@gmail.com",
-        location: "Belo Horizonte",
-        phone: "456123789",
-        skills: ["Node.js", "MongoDB"],
-      },
-    ],
-    reaproveitados: [
-      {
-        id: "4",
-        name: "Ana Lima",
-        title: "Full Stack Developer",
-        email: "ana@gmail.com",
-        location: "Curitiba",
-        phone: "789123456",
-        skills: ["Python", "Django"],
-      },
-    ],
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAplicante, setSelectedAplicante] = useState(null);
+  const { register, handleSubmit } = useForm(); // Para lidar com o formulário de upload de currículos
+  const [curriculos, setCurriculos] = useState([]); // Para armazenar os currículos reais do backend
+
+  useEffect(() => {
+    // Função para buscar currículos do backend
+    const fetchCurriculos = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:5000/getcurriculos");
+        setCurriculos(response.data); // Atualiza os currículos com os dados do backend
+      } catch (error) {
+        console.error("Erro ao buscar currículos:", error);
+      }
+    };
+
+    fetchCurriculos(); // Chama a função ao montar o componente
+  }, []);
+
+  const handleCardClick = (aplicante) => {
+    setSelectedAplicante(aplicante);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedAplicante(null);
+  };
+
+  // Função para lidar com o envio dos currículos
+  const onSubmit = (data) => {
+    const formData = new FormData();
+
+    // Adiciona vários currículos ao FormData
+    if (data.curriculo.length > 0) {
+      Array.from(data.curriculo).map((curriculo, index) => {
+        formData.append(`curriculo${index}`, curriculo, curriculo.name);
+      });
+    }
+
+    // Enviar currículos para o backend
+    axios
+      .post(
+        `http://127.0.0.1:5000/enviarcurriculo?id_vaga=${localStorage.getItem(
+          "jobId"
+        )}`,
+        formData
+      )
+      .then((res) => {
+        console.log("Currículos enviados com sucesso", res.data);
+      })
+      .catch((error) => {
+        console.error("Erro ao enviar currículos:", error);
+      });
+  };
+
+  // Função para lidar com a seleção de arquivos múltiplos
+  const handleFileChange = (e) => {
+    console.log(e.target.files);
+    setCurriculos(e.target.files); // Armazena os arquivos selecionados
   };
 
   return (
@@ -55,33 +75,51 @@ const JobDetails = () => {
         <Sidebar />
       </div>
       <div className="jobdetail-content">
-        <div className="jobdetail-categories">
-          <div className="jobdetail-category">
-            <h2>Elegíveis</h2>
-            <div className="jobdetail-cards">
-              {aplicantes.elegiveis.map((aplicante) => (
-                <AplicanteCard key={aplicante.id} {...aplicante} />
-              ))}
-            </div>
-          </div>
-          <div className="jobdetail-category">
-            <h2>Desqualificados</h2>
-            <div className="jobdetail-cards">
-              {aplicantes.desqualificados.map((aplicante) => (
-                <AplicanteCard key={aplicante.id} {...aplicante} />
-              ))}
-            </div>
-          </div>
-          <div className="jobdetail-category">
-            <h2>Reaproveitados</h2>
-            <div className="jobdetail-cards">
-              {aplicantes.reaproveitados.map((aplicante) => (
-                <AplicanteCard key={aplicante.id} {...aplicante} />
-              ))}
-            </div>
+        <div className="jobdetail-curriculos">
+          <h2>Lista de Currículos</h2>
+          <div className="jobdetail-cards">
+            {curriculos.length > 0 ? (
+              curriculos.map((curriculo, index) => (
+                <AplicanteCard
+                  key={index}
+                  name={curriculo.nome}
+                  email={curriculo.email}
+                  phone={curriculo.telefone}
+                  skills={curriculo.habilidades}
+                  onClick={() => handleCardClick(curriculo)}
+                />
+              ))
+            ) : (
+              <p>Nenhum currículo encontrado</p>
+            )}
           </div>
         </div>
+
+        {/* Formulário de Upload de Currículos */}
+        <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+          <div className="jobdetail-curriculo-upload">
+            <label htmlFor="curriculo">Enviar Currículos:</label>
+            <input
+              type="file"
+              name="curriculo"
+              multiple
+              onChange={handleFileChange} // Permite múltiplos arquivos
+              {...register("curriculo")}
+            />
+          </div>
+          <button type="submit" className="jobdetail-upload-button">
+            Enviar Currículos
+          </button>
+        </form>
       </div>
+
+      {selectedAplicante && (
+        <Modal
+          show={showModal}
+          handleClose={closeModal}
+          aplicante={selectedAplicante}
+        />
+      )}
     </div>
   );
 };
