@@ -1,117 +1,61 @@
-import spacy
+
 import re
-from pathlib import Path
-import utils
-from bson import ObjectId  # Para lidar com ObjectId do MongoDB
+
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 
 
-# Função para limpar o texto extraído do currículo
 def limpar_texto(text):
-    """
-    Limpa o texto removendo quebras de linha extras e espaços desnecessários.
-    """
-    text = re.sub(r'\n+', '\n', text)  # Remove múltiplas quebras de linha
-    text = re.sub(r'\s+', ' ', text)  # Remove múltiplos espaços em branco
+    text = re.sub(r'\n+', '\n', text)
+    text = re.sub(r'\s+', ' ', text)
     return text.strip()
 
 
-# Função para lidar com ObjectId
-def json_converter(o):
-    if isinstance(o, ObjectId):
-        return str(o)
-    raise TypeError(f"Type {type(o)} is not serializable")
+model_name = "meta-llama/Llama-3.2-11B-Vision-Instruct"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
 
 
-# Função para extrair habilidades (skills) do currículo usando expressões regulares
-def extrair_skills(text):
-    """
-    Extrai a seção de habilidades técnicas ou conhecimentos do currículo.
-    """
-    skills = []
+def extrair_dados_com_modelo(texto):
+    prompt = f"Extraia as habilidades, experiência profissional, formação e certificações do seguinte currículo:\n\n{texto}"
+    inputs = tokenizer(prompt, return_tensors="pt")
+    output = model.generate(**inputs, max_length=500)
+    resultado = tokenizer.decode(output[0], skip_special_tokens=True)
 
-    # Diversos padrões possíveis de "habilidades" ou "conhecimentos" em um currículo
-    patterns = [
-        r'Conhecimentos(.*?)(Projetos Realizados|Certificações|Idiomas|$)',
-        r'Habilidades Técnicas(.*?)(Certificações|Idiomas|$)',
-        r'Competências(.*?)(Projetos|Certificações|Idiomas|$)'
-    ]
+    habilidades = re.findall(r"Habilidades:(.*?)\n", resultado, re.S)
+    experiencia = re.findall(r"Experiencia:(.*?)\n", resultado, re.S)
+    formacao = re.findall(r"Formacao e Certificacoes:(.*?)\n", resultado, re.S)
 
-    for pattern in patterns:
-        skills_sections = re.findall(pattern, text, re.S)
-        if skills_sections:
-            skills_text = skills_sections[0][0].strip()
-            skills_lines = re.split(r'\n|,|;', skills_text)  # Divida por quebras de linha, vírgula ou ponto e vírgula
-            for line in skills_lines:
-                clean_line = line.strip("- ").strip()
-                if clean_line:
-                    skills.append(clean_line)
-
-    return skills
-
-
-# Função para extrair informações de contato do currículo
-
-
-def extrair_contato(text):
-    contato = {}
-
-    # Melhorando a regex para capturar apenas o primeiro nome e o primeiro sobrenome
-    nome_match = re.search(r'(?:Nome[: ]*)?([A-Z][a-zÀ-ÖØ-öø-ÿ\'\-]+(?:\s+[A-Z][a-zÀ-ÖØ-öø-ÿ\'\-]+))', text)
-
-    if nome_match:
-        contato['nome'] = nome_match.group(1).strip()
-    else:
-        contato['nome'] = None
-
-    # Regex para extrair email
-    email_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', text)
-    if email_match:
-        contato['email'] = email_match.group(0).strip()
-    else:
-        contato['email'] = None
-
-    # Regex para extrair telefone (exemplo simples)
-    telefone_match = re.search(r'\(?\d{2,3}\)?\s?\d{4,5}-?\d{4}', text)
-    if telefone_match:
-        contato['telefone'] = telefone_match.group(0).strip()
-    else:
-        contato['telefone'] = None
-
-    return contato
-
-# Função principal para processar os currículos enviados
-def processar_curriculo(texto_curriculo_complexo):
-    """
-    Processa o texto do currículo e usa spaCy para análise NER (entidades nomeadas).
-    """
-
-    # Defina o caminho completo para o modelo spaCy instalado
-    modelo_path = Path(r"G:\Anaconda-python\Lib\site-packages\pt_core_news_sm\pt_core_news_sm-3.7.0")
-
-    # Carrega o modelo spaCy a partir do caminho especificado
-    nlp = spacy.load(modelo_path)
-
-    # Limpa o texto extraído do currículo
-    texto_limpo = limpar_texto(texto_curriculo_complexo)  # Agora apenas um currículo será processado
-
-    # Processa o currículo com o modelo spaCy para análise mais avançada
-    doc_complexo = nlp(texto_limpo)
-
-    # Extrai as informações de contato (usando expressões regulares)
-    contato_complexo = extrair_contato(texto_limpo)
-
-    # Extrai habilidades usando regex aprimorado
-    skills_complexo = extrair_skills(texto_limpo)
-
-    # Exibe as informações extraídas
-    print("Informações de Contato:", contato_complexo)
-    print("Habilidades:", skills_complexo)
-
-    # Retorna as informações de contato e habilidades extraídas
     return {
-        "nome": contato_complexo['nome'],
-        "email": contato_complexo['email'],
-        "telefone": contato_complexo['telefone'],
-        "habilidades": skills_complexo
+        "habilidades": habilidades[0].strip().split(', ') if habilidades else [],
+        "experiencia": experiencia[0].strip().split('\n') if experiencia else [],
+        "formacao": formacao[0].strip().split(', ') if formacao else []
+    }
+
+
+def calcular_compatibilidade(dados_curriculo, dados_vaga):
+    compatibilidade_habilidades = len(set(dados_vaga["habilidades"]).intersection(set(dados_curriculo["habilidades"])))
+    compatibilidade_experiencia = 1 if any(
+        exp in dados_curriculo["experiencia"] for exp in dados_vaga["experiencia"]) else 0
+    compatibilidade_formacao = 1 if any(form in dados_curriculo["formacao"] for form in dados_vaga["formacao"]) else 0
+
+    compatibilidade_total = (compatibilidade_habilidades * 0.5) + (compatibilidade_experiencia * 0.3) + (
+                compatibilidade_formacao * 0.2)
+    compatibilidade_percentual = compatibilidade_total * 100 / len(dados_vaga["habilidades"])
+
+    return round(compatibilidade_percentual, 2)
+
+
+def processar_curriculo(texto_curriculo, dados_vaga):
+    texto_limpo = limpar_texto(texto_curriculo)
+    dados_extraidos = extrair_dados_com_modelo(texto_limpo)
+
+    compatibilidade = calcular_compatibilidade(dados_extraidos, dados_vaga)
+
+    return {
+        "habilidades": dados_extraidos["habilidades"],
+        "experiencia": dados_extraidos["experiencia"],
+        "formacao": dados_extraidos["formacao"],
+        "compatibilidade": compatibilidade
     }
 

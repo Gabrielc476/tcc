@@ -77,29 +77,30 @@ def getVaga():
 
 @app.route("/getcurriculos", methods=["GET"])
 def getCurriculos():
-    # Pega todos os currículos do banco de dados
+    id_vaga = request.args.get("id_vaga")
+    vaga = db.get_vaga_by_id(id_vaga)
     curriculos = db.get_all_curriculos()
     lista_curriculos_formatados = []
 
-    # Itera por cada currículo armazenado no banco
     for curriculo in curriculos:
-        # Processa o currículo para extrair as informações desejadas
-        dados_extraidos = extrairdadoscurriculo.processar_curriculo(curriculo["texto"])
+        dados_extraidos = extrairdadoscurriculo.processar_curriculo(curriculo["texto"], vaga)
 
-        # Cria um objeto para cada currículo extraído, com as informações formatadas
         curriculo_formatado = {
-            "id_vaga": curriculo.get("id_vaga", "Não especificado"),  # ID da vaga relacionada ao currículo
-            "nome": dados_extraidos.get("nome", "Nome não encontrado"),  # Nome do candidato
-            "email": dados_extraidos.get("email", "Email não encontrado"),  # E-mail do candidato
-            "telefone": dados_extraidos.get("telefone", "Telefone não encontrado"),  # Telefone do candidato
-            "habilidades": dados_extraidos.get("habilidades", [])  # Lista de habilidades extraídas
+            "id_vaga": curriculo.get("id_vaga", "Não especificado"),
+            "nome": dados_extraidos.get("nome", "Nome não encontrado"),
+            "email": dados_extraidos.get("email", "Email não encontrado"),
+            "telefone": dados_extraidos.get("telefone", "Telefone não encontrado"),
+            "habilidades": dados_extraidos.get("habilidades", []),
+            "experiencia": dados_extraidos.get("experiencia", []),
+            "formacao": dados_extraidos.get("formacao", []),
+            "compatibilidade": dados_extraidos.get("compatibilidade", 0)
         }
 
-        # Adiciona o currículo formatado à lista que será enviada ao frontend
         lista_curriculos_formatados.append(curriculo_formatado)
 
-    # Retorna a lista de currículos formatados como um objeto JSON para o frontend
     return jsonify(lista_curriculos_formatados), 200
+
+
 @app.route("/login", methods=["POST"])
 def login():
     try:
