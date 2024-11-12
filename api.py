@@ -78,12 +78,20 @@ def getVaga():
 @app.route("/getcurriculos", methods=["GET"])
 def getCurriculos():
     id_vaga = request.args.get("id_vaga")
-    vaga = db.get_vaga_by_id(id_vaga)
+    #vaga = db.get_vaga_by_id(id_vaga)
     curriculos = db.get_all_curriculos()
     lista_curriculos_formatados = []
+    dados_vaga = {
+        "titulo": "Desenvolvedor front end",
+        "descricao": "Desenvolvedor front end júnior de sistema para internet",
+        "experiencia": [{"requerimento": "front end", "anos": 2}],  # Experiência "front end" com 2 anos
+        "habilidades": ["typescript"],  # Conhecimento em "typescript"
+        "idiomas": [{"idioma": "Inglês", "proficiencia": "fluente"}],  # Idioma "Inglês" com proficiência "fluente"
+        "formacao": [{"curso": "arquitetura", "situacao": "completo"}]  # Curso "arquitetura" com situação "completo"
+    }
 
     for curriculo in curriculos:
-        dados_extraidos = extrairdadoscurriculo.processar_curriculo(curriculo["texto"], vaga)
+        dados_extraidos = extrairdadoscurriculo.processar_curriculo(curriculo["texto"], dados_vaga)
 
         curriculo_formatado = {
             "id_vaga": curriculo.get("id_vaga", "Não especificado"),
