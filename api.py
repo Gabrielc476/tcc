@@ -78,20 +78,14 @@ def getVaga():
 @app.route("/getcurriculos", methods=["GET"])
 def getCurriculos():
     id_vaga = request.args.get("id_vaga")
-    #vaga = db.get_vaga_by_id(id_vaga)
-    curriculos = db.get_all_curriculos()
+    print(id_vaga)
+    vaga = db.get_vaga_by_id(id_vaga)
+    curriculos = db.get_curriculos_by_id_vaga(id_vaga)
     lista_curriculos_formatados = []
-    dados_vaga = {
-        "titulo": "Desenvolvedor front end",
-        "descricao": "Desenvolvedor front end júnior de sistema para internet",
-        "experiencia": [{"requerimento": "front end", "anos": 2}],  # Experiência "front end" com 2 anos
-        "habilidades": ["typescript"],  # Conhecimento em "typescript"
-        "idiomas": [{"idioma": "Inglês", "proficiencia": "fluente"}],  # Idioma "Inglês" com proficiência "fluente"
-        "formacao": [{"curso": "arquitetura", "situacao": "completo"}]  # Curso "arquitetura" com situação "completo"
-    }
+    print(vaga)
 
     for curriculo in curriculos:
-        dados_extraidos = extrairdadoscurriculo.processar_curriculo(curriculo["texto"], dados_vaga)
+        dados_extraidos = extrairdadoscurriculo.processar_curriculo(curriculo["texto"], vaga)
 
         curriculo_formatado = {
             "id_vaga": curriculo.get("id_vaga", "Não especificado"),
@@ -101,11 +95,14 @@ def getCurriculos():
             "habilidades": dados_extraidos.get("habilidades", []),
             "experiencia": dados_extraidos.get("experiencia", []),
             "formacao": dados_extraidos.get("formacao", []),
-            "compatibilidade": dados_extraidos.get("compatibilidade", 0)
+            "compatibilidade": dados_extraidos.get("compatibilidade", 0),
+            "resumocompatibilidade": dados_extraidos.get("resumocompatibilidade","resumo inexistente"),
+            "resumocandidato": dados_extraidos.get("resumocandidato", "resumo inexistente")
         }
 
         lista_curriculos_formatados.append(curriculo_formatado)
-
+    lista_curriculos_formatados = sorted(lista_curriculos_formatados, key=lambda x: x["compatibilidade"], reverse=True)
+    print(lista_curriculos_formatados)
     return jsonify(lista_curriculos_formatados), 200
 
 

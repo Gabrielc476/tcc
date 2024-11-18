@@ -169,3 +169,48 @@ def get_all_curriculos():
     except Exception as error:
         print(f"Error fetching curriculos: {error}")
         return []
+
+def get_vaga_by_id(id_vaga):
+    """
+    Busca uma vaga no MongoDB pelo ID da vaga.
+
+    Args:
+        id_vaga (str): O ID da vaga.
+
+    Returns:
+        dict: O documento da vaga se encontrado, caso contrário None.
+    """
+    try:
+        collection = db["vagas"]
+        vaga = collection.find_one({"_id": ObjectId(id_vaga)})
+        if vaga:
+            vaga["_id"] = str(vaga["_id"])  # Converte ObjectId para string
+        return vaga
+    except pymongo.errors.ConnectionFailure as error:
+        print(f"Could not connect to MongoDB: {error}")
+        return None
+    except Exception as error:
+        print(f"Error fetching vaga by id: {error}")
+        return None
+def get_curriculos_by_id_vaga(id_vaga):
+    """
+    Retorna todos os currículos associados ao ID da vaga no MongoDB.
+
+    Args:
+        id_vaga (str): O ID da vaga.
+
+    Returns:
+        list: Uma lista de documentos contendo todos os currículos associados ao ID da vaga.
+    """
+    try:
+        collection = db["curriculos"]
+        curriculos = list(collection.find({"id_vaga": id_vaga}))
+        for curriculo in curriculos:
+            curriculo["_id"] = str(curriculo["_id"])  # Converte ObjectId para string
+        return curriculos
+    except pymongo.errors.ConnectionFailure as error:
+        print(f"Could not connect to MongoDB: {error}")
+        return []
+    except Exception as error:
+        print(f"Error fetching curriculos by id_vaga: {error}")
+        return []
