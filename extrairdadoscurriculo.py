@@ -4,7 +4,7 @@ import json
 from openai import OpenAI
 
 # Configuração da API do OpenAI com a chave de API
-client = OpenAI(api_key="")
+
 
 def limpar_texto(text):
     """Limpa o texto removendo quebras de linha e espaços desnecessários."""
