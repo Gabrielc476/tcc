@@ -1,53 +1,42 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar";
 import AplicanteCard from "../../components/aplicantecard";
-import Modal from "../../components/modal";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import "./jobdetails.css"; // Certifique-se de que esse arquivo CSS existe
+import "./jobdetails.css";
 
 const JobDetails = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [selectedAplicante, setSelectedAplicante] = useState(null);
-  const { register, handleSubmit } = useForm(); // Para lidar com o formulário de upload de currículos
-  const [curriculos, setCurriculos] = useState([]); // Para armazenar os currículos reais do backend
+  const { register, handleSubmit } = useForm();
+  const [curriculos, setCurriculos] = useState([]);
+  const [loading, setLoading] = useState(true); // Estado para o carregamento
 
   useEffect(() => {
-    // Função para buscar currículos do backend
     const fetchCurriculos = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:5000/getcurriculos");
-        setCurriculos(response.data); // Atualiza os currículos com os dados do backend
+        setLoading(true); // Inicia o carregamento
+        const response = await axios.get(
+          `http://127.0.0.1:5000/getcurriculos?id_vaga=${localStorage.getItem(
+            "jobId"
+          )}`
+        );
+        setCurriculos(response.data);
       } catch (error) {
         console.error("Erro ao buscar currículos:", error);
+      } finally {
+        setLoading(false); // Finaliza o carregamento
       }
     };
-
-    fetchCurriculos(); // Chama a função ao montar o componente
+    fetchCurriculos();
   }, []);
 
-  const handleCardClick = (aplicante) => {
-    setSelectedAplicante(aplicante);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedAplicante(null);
-  };
-
-  // Função para lidar com o envio dos currículos
   const onSubmit = (data) => {
     const formData = new FormData();
-
-    // Adiciona vários currículos ao FormData
     if (data.curriculo.length > 0) {
-      Array.from(data.curriculo).map((curriculo, index) => {
+      Array.from(data.curriculo).forEach((curriculo, index) => {
         formData.append(`curriculo${index}`, curriculo, curriculo.name);
       });
     }
 
-    // Enviar currículos para o backend
     axios
       .post(
         `http://127.0.0.1:5000/enviarcurriculo?id_vaga=${localStorage.getItem(
@@ -63,12 +52,6 @@ const JobDetails = () => {
       });
   };
 
-  // Função para lidar com a seleção de arquivos múltiplos
-  const handleFileChange = (e) => {
-    console.log(e.target.files);
-    setCurriculos(e.target.files); // Armazena os arquivos selecionados
-  };
-
   return (
     <div className="jobdetail-container">
       <div className="jobdetail-sidebar">
@@ -78,7 +61,12 @@ const JobDetails = () => {
         <div className="jobdetail-curriculos">
           <h2>Lista de Currículos</h2>
           <div className="jobdetail-cards">
-            {curriculos.length > 0 ? (
+            {loading ? (
+              <div className="loading-container">
+                <div className="spinner"></div>
+                <p>Carregando currículos...</p>
+              </div>
+            ) : curriculos.length > 0 ? (
               curriculos.map((curriculo, index) => (
                 <AplicanteCard
                   key={index}
@@ -86,7 +74,11 @@ const JobDetails = () => {
                   email={curriculo.email}
                   phone={curriculo.telefone}
                   skills={curriculo.habilidades}
-                  onClick={() => handleCardClick(curriculo)}
+                  experiencia={curriculo.experiencia}
+                  formacao={curriculo.formacao}
+                  compatibilidade={curriculo.compatibilidade}
+                  resumocompatibilidade={curriculo.resumocompatibilidade}
+                  resumocandidato={curriculo.resumocandidato}
                 />
               ))
             ) : (
@@ -95,7 +87,6 @@ const JobDetails = () => {
           </div>
         </div>
 
-        {/* Formulário de Upload de Currículos */}
         <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
           <div className="jobdetail-curriculo-upload">
             <label htmlFor="curriculo">Enviar Currículos:</label>
@@ -103,7 +94,6 @@ const JobDetails = () => {
               type="file"
               name="curriculo"
               multiple
-              onChange={handleFileChange} // Permite múltiplos arquivos
               {...register("curriculo")}
             />
           </div>
@@ -112,14 +102,6 @@ const JobDetails = () => {
           </button>
         </form>
       </div>
-
-      {selectedAplicante && (
-        <Modal
-          show={showModal}
-          handleClose={closeModal}
-          aplicante={selectedAplicante}
-        />
-      )}
     </div>
   );
 };
